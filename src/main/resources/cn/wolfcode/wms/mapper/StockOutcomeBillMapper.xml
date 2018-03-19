@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.wms.mapper.StockOutcomeBillMapper">
+  <resultMap id="BaseResultMap" type="cn.wolfcode.wms.domain.StockOutcomeBill">
+    <id column="id" property="id" />
+    <result column="sn" property="sn" />
+    <result column="vdate" property="vdate" />
+    <result column="status" property="status" />
+    <result column="totalAmount" property="totalAmount" />
+    <result column="totalNumber" property="totalNumber" />
+    <result column="auditTime" property="auditTime" />
+    <result column="inputTime" property="inputTime" />
+    <association property="inputUser" javaType="Employee" columnPrefix="inputUser_">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+    </association>
+    <association property="auditor" javaType="Employee" columnPrefix="auditor_">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+    </association>
+    <association property="depot" javaType="Depot" columnPrefix="depot_">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+    </association>
+    <association property="client" javaType="Client" columnPrefix="client_">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+    </association>
+    <collection property="items" ofType="StockOutcomeBillItem" column="id"
+                select="cn.wolfcode.wms.mapper.StockOutcomeBillItemMapper.selectItemsByBillId"/>
+  </resultMap>
+  <delete id="deleteByPrimaryKey">
+    delete from stockOutcomebill
+    where id = #{id}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into stockOutcomebill (sn, vdate, status, totalAmount, totalNumber, auditTime, 
+      inputTime, inputUser_id, auditor_id, depot_id, client_id)
+    values (#{sn}, #{vdate}, #{status}, #{totalAmount}, #{totalNumber}, #{auditTime}, 
+      #{inputTime}, #{inputUser.id}, #{auditor.id}, #{depot.id}, #{client.id})
+  </insert>
+  <update id="updateByPrimaryKey">
+    update stockOutcomebill
+    set sn = #{sn},
+      vdate = #{vdate},
+      totalAmount = #{totalAmount},
+      totalNumber = #{totalNumber},
+      depot_id = #{depot.id},
+      client_id = #{client.id}
+    where id = #{id}
+  </update>
+  <update id="audit">
+      update stockOutcomebill
+      set status = #{status},
+        auditor_id = #{auditor.id},
+        auditTime = #{auditTime}
+       where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    <include refid="base_column"/>
+    <include refid="base_table"/>
+    where ob.id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    <include refid="base_column"/>
+    <include refid="base_table"/>
+  </select>
+  <select id="queryForList" resultMap="BaseResultMap">
+    <include refid="base_column"/>
+    <include refid="base_table"/>
+    <include refid="base_where"/>
+    limit #{startIndex}, #{pageSize}
+  </select>
+  <select id="queryForCount" resultType="int">
+    select count(ob.id)
+    <include refid="base_table"/>
+    <include refid="base_where"/>
+  </select>
+  <sql id="base_column">
+    select ob.id, ob.sn, ob.vdate, ob.status, ob.totalAmount, ob.totalNumber, ob.auditTime, ob.inputTime,
+    inputUser.id inputUser_id, inputUser.name inputUser_name,
+    auditor.id auditor_id, auditor.name auditor_name,
+    d.id depot_id, d.name depot_name,
+    c.id client_id, c.name client_name
+  </sql>
+  <sql id="base_table">
+    from stockOutcomebill ob
+    join employee inputUser on ob.inputUser_id = inputUser.id
+    left join employee auditor on ob.auditor_id = auditor.id
+    join depot d on ob.depot_id = d.id
+    join client c on ob.client_id = c.id
+  </sql>
+  <sql id="base_where">
+    <where>
+      <if test="beginDate != null">
+        and ob.vdate >= #{beginDate}
+      </if>
+      <if test="endDate != null">
+        and ob.vdate &lt;= #{endDate}
+      </if>
+      <if test="depotId > 0">
+        and ob.depot_id = #{depotId}
+      </if>
+      <if test="clientId > 0">
+        and ob.client_id = #{clientId}
+      </if>
+      <if test="status >= 0">
+        and ob.status = #{status}
+      </if>
+    </where>
+  </sql>
+</mapper>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.wms.mapper.OrderBillMapper">
+  <resultMap id="BaseResultMap" type="cn.wolfcode.wms.domain.OrderBill">
+    <id column="id" property="id" />
+    <result column="sn" property="sn" />
+    <result column="vdate" property="vdate" />
+    <result column="status" property="status" />
+    <result column="totalAmount" property="totalAmount" />
+    <result column="totalNumber" property="totalNumber" />
+    <result column="auditTime" property="auditTime" />
+    <result column="inputTime" property="inputTime" />
+    <association property="inputUser" javaType="Employee" columnPrefix="inputUser_">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+    </association>
+    <association property="auditor" javaType="Employee" columnPrefix="auditor_">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+    </association>
+    <association property="supplier" javaType="Supplier" columnPrefix="supplier_">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+    </association>
+    <collection property="items" ofType="OrderBillItem" column="id"
+                select="cn.wolfcode.wms.mapper.OrderBillItemMapper.selectItemsByBillId"/>
+  </resultMap>
+  <delete id="deleteByPrimaryKey">
+    delete from orderbill
+    where id = #{id}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into orderbill (sn, vdate, status, totalAmount, totalNumber, auditTime, 
+      inputTime, inputUser_id, auditor_id, supplier_id)
+    values (#{sn}, #{vdate}, #{status}, #{totalAmount}, #{totalNumber}, #{auditTime}, 
+      #{inputTime}, #{inputUser.id}, #{auditor.id}, #{supplier.id})
+  </insert>
+  <update id="updateByPrimaryKey">
+    update orderbill
+    set sn = #{sn},
+      vdate = #{vdate},
+      totalAmount = #{totalAmount},
+      totalNumber = #{totalNumber},
+      supplier_id = #{supplier.id}
+    where id = #{id}
+  </update>
+  <update id="audit">
+      update orderbill
+      set status = #{status},
+        auditor_id = #{auditor.id},
+        auditTime = #{auditTime}
+       where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    <include refid="base_column"/>
+    <include refid="base_table"/>
+    where ob.id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    <include refid="base_column"/>
+    <include refid="base_table"/>
+  </select>
+  <select id="queryForList" resultMap="BaseResultMap">
+    <include refid="base_column"/>
+    <include refid="base_table"/>
+    <include refid="base_where"/>
+    limit #{startIndex}, #{pageSize}
+  </select>
+  <select id="queryForCount" resultType="int">
+    select count(ob.id)
+    <include refid="base_table"/>
+    <include refid="base_where"/>
+  </select>
+  <sql id="base_column">
+    select ob.id, ob.sn, ob.vdate, ob.status, ob.totalAmount, ob.totalNumber, ob.auditTime, ob.inputTime,
+    inputUser.id inputUser_id, inputUser.name inputUser_name,
+    auditor.id auditor_id, auditor.name auditor_name,
+    s.id supplier_id, s.name supplier_name
+  </sql>
+  <sql id="base_table">
+    from orderbill ob
+    join employee inputUser on ob.inputUser_id = inputUser.id
+    left join employee auditor on ob.auditor_id = auditor.id
+    join supplier s on ob.supplier_id = s.id
+  </sql>
+  <sql id="base_where">
+    <where>
+      <if test="beginDate != null">
+        and ob.vdate >= #{beginDate}
+      </if>
+      <if test="endDate != null">
+        and ob.vdate &lt;= #{endDate}
+      </if>
+      <if test="supplierId > 0">
+        and ob.supplier_id = #{supplierId}
+      </if>
+      <if test="status >= 0">
+        and ob.status = #{status}
+      </if>
+    </where>
+  </sql>
+</mapper>
