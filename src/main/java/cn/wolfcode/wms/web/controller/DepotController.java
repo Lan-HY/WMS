@@ -6,6 +6,7 @@ import cn.wolfcode.wms.query.QueryObject;
 import cn.wolfcode.wms.service.DepotService;
 import cn.wolfcode.wms.util.JSONResult;
 import cn.wolfcode.wms.util.RequiredPermission;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ public class DepotController {
     private DepotService depotService;
 
     @RequiredPermission("仓库列表")
+    @RequiresPermissions("depot:list")
     @RequestMapping("list")
     public String query(Model model, @ModelAttribute("qo")QueryObject qo) throws Exception {
         PageResult result = depotService.query(qo);
@@ -29,6 +31,7 @@ public class DepotController {
     }
 
     @RequiredPermission("编辑仓库")
+    @RequiresPermissions("depot:input")
     @RequestMapping("input")
     public String input(Long id, Model model) throws Exception {
         if (id != null) {
@@ -45,6 +48,7 @@ public class DepotController {
     }
 
     @RequiredPermission("删除仓库")
+    @RequiresPermissions("depot:delete")
     @RequestMapping("delete")
     @ResponseBody
     public Object delete(Long id) throws Exception {

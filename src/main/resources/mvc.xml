@@ -8,6 +8,8 @@
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc.xsd
         ">
+	<!-- 引入shiro配置 -->
+	<import resource="classpath:shiro.xml"/>
 	<!-- 引入Spring相关组件配置 -->
 	<import resource="classpath:applicationContext.xml"/>
 	<!--MVC的注解驱动-->
@@ -44,22 +46,22 @@
 		<property name="suffix" value=".jsp"/>
 	</bean>
 	<!-- 配置拦截器 -->
- 	<mvc:interceptors>
+ 	<!--<mvc:interceptors>
  		<mvc:interceptor>
-			<!-- 拦截什么资源：/*：拦截一级资源 /**：拦截所有资源 -->
+			&lt;!&ndash; 拦截什么资源：/*：拦截一级资源 /**：拦截所有资源 &ndash;&gt;
  			<mvc:mapping path="/**"/>
-			<!-- 不拦截那些请求 -->
+			&lt;!&ndash; 不拦截那些请求 &ndash;&gt;
  			<mvc:exclude-mapping path="/login.do"/>
  			<bean class="cn.wolfcode.wms.web.interceptor.CheckLoginInterceptor"/>
  		</mvc:interceptor>
  		<mvc:interceptor>
-			<!-- 拦截什么资源：/*：拦截一级资源 /**：拦截所有资源 -->
+			&lt;!&ndash; 拦截什么资源：/*：拦截一级资源 /**：拦截所有资源 &ndash;&gt;
  			<mvc:mapping path="/**"/>
-			<!-- 不拦截那些请求 -->
+			&lt;!&ndash; 不拦截那些请求 &ndash;&gt;
  			<mvc:exclude-mapping path="/login.do"/>
  			<bean class="cn.wolfcode.wms.web.interceptor.SecurityInterceptor"/>
  		</mvc:interceptor>
- 	</mvc:interceptors>
+ 	</mvc:interceptors>-->
 
 	<!--配置SpringMVC的统一异常处理-->
 	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
@@ -71,6 +73,7 @@
 		<property name="exceptionMappings">
 			<value>
 				cn.wolfcode.wms.exception.SecurityException=common/nopermission
+				org.apache.shiro.authz.UnauthorizedException=common/nopermission
 				<!-- 这里还可以继续扩展不同异常类型的异常处理 -->
 			</value>
 		</property>

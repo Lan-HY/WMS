@@ -9,6 +9,7 @@ import cn.wolfcode.wms.service.EmployeeService;
 import cn.wolfcode.wms.service.RoleService;
 import cn.wolfcode.wms.util.JSONResult;
 import cn.wolfcode.wms.util.RequiredPermission;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,7 @@ public class EmployeeController {
     private RoleService roleService;
 
     @RequiredPermission("员工列表")
+    @RequiresPermissions("employee:list")
     @RequestMapping("list")
     public String query(Model model, @ModelAttribute("qo")EmployeeQueryObject qo) throws Exception {
         PageResult result = employeeService.query(qo);
@@ -43,6 +45,7 @@ public class EmployeeController {
     }
 
     @RequiredPermission("编辑员工")
+    @RequiresPermissions("employee:input")
     @RequestMapping("input")
     public String input(Long id, Model model) throws Exception {
         if (id != null) {
@@ -61,6 +64,7 @@ public class EmployeeController {
     }
 
     @RequiredPermission("删除员工")
+    @RequiresPermissions("employee:delete")
     @RequestMapping("delete")
     @ResponseBody
     public Object delete(Long id) throws Exception {

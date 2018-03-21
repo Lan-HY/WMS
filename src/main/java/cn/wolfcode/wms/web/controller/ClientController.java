@@ -6,6 +6,7 @@ import cn.wolfcode.wms.query.QueryObject;
 import cn.wolfcode.wms.service.ClientService;
 import cn.wolfcode.wms.util.JSONResult;
 import cn.wolfcode.wms.util.RequiredPermission;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ public class ClientController {
     private ClientService clientService;
 
     @RequiredPermission("客户列表")
+    @RequiresPermissions("client:list")
     @RequestMapping("list")
     public String query(Model model, @ModelAttribute("qo")QueryObject qo) throws Exception {
         PageResult result = clientService.query(qo);
@@ -29,6 +31,7 @@ public class ClientController {
     }
 
     @RequiredPermission("编辑客户")
+    @RequiresPermissions("client:input")
     @RequestMapping("input")
     public String input(Long id, Model model) throws Exception {
         if (id != null) {
@@ -45,6 +48,7 @@ public class ClientController {
     }
 
     @RequiredPermission("删除客户")
+    @RequiresPermissions("client:delete")
     @RequestMapping("delete")
     @ResponseBody
     public Object delete(Long id) throws Exception {

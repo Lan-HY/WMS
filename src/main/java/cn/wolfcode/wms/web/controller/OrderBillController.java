@@ -7,6 +7,7 @@ import cn.wolfcode.wms.service.OrderBillService;
 import cn.wolfcode.wms.service.SupplierService;
 import cn.wolfcode.wms.util.JSONResult;
 import cn.wolfcode.wms.util.RequiredPermission;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,7 @@ public class OrderBillController {
     private SupplierService supplierService;
 
     @RequiredPermission("采购订单列表")
+    @RequiresPermissions("orderBill:list")
     @RequestMapping("list")
     public String query(Model model, @ModelAttribute("qo")OrderBillQueryObject qo) throws Exception {
         model.addAttribute("suppliers", supplierService.list());
@@ -34,6 +36,7 @@ public class OrderBillController {
     }
 
     @RequiredPermission("编辑采购订单")
+    @RequiresPermissions("orderBill:input")
     @RequestMapping("input")
     public String input(Long id, Model model) throws Exception {
         model.addAttribute("suppliers", supplierService.list());
@@ -52,6 +55,7 @@ public class OrderBillController {
     }
 
     @RequiredPermission("删除采购订单")
+    @RequiresPermissions("orderBill:delete")
     @RequestMapping("delete")
     @ResponseBody
     public Object delete(Long id) throws Exception {

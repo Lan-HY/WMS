@@ -9,6 +9,7 @@ import cn.wolfcode.wms.service.SupplierService;
 import cn.wolfcode.wms.util.Dictionary;
 import cn.wolfcode.wms.util.RequiredPermission;
 import com.alibaba.fastjson.JSON;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +36,7 @@ public class ChartController {
     private ClientService clientService;
 
     @RequiredPermission("订货报表")
+    @RequiresPermissions("chart:order")
     @RequestMapping("order")
     public String order(Model model, @ModelAttribute("qo") ChartOrderQueryObject qo) throws  Exception{
 
@@ -46,6 +48,7 @@ public class ChartController {
     }
 
     @RequiredPermission("销售报表")
+    @RequiresPermissions("chart:sale")
     @RequestMapping("sale")
     public String sale(Model model, @ModelAttribute("qo") ChartSaleQueryObject qo) throws  Exception{
 

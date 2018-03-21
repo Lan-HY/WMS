@@ -29,4 +29,6 @@ public interface RoleMapper {
 
     void deleteMenuRelation(Long roleId);
 
+    List<Role> selectRolesByEmployeeId(Long employeeId);
+
 }

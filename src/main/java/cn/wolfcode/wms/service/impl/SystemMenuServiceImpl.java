@@ -8,6 +8,8 @@ import cn.wolfcode.wms.query.QueryObject;
 import cn.wolfcode.wms.query.SystemMenuQueryObject;
 import cn.wolfcode.wms.service.SystemMenuService;
 import cn.wolfcode.wms.util.UserContext;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +58,8 @@ public class SystemMenuServiceImpl implements SystemMenuService {
     }
 
     public List<Map<String, Object>> loadMenusBySn(String parentSn) {
-        Employee user = UserContext.getCurrentUser();
+        Subject subject = SecurityUtils.getSubject();
+        Employee user = (Employee) subject.getPrincipal();
         return user.isAdmin() ? systemMenuMapper.loadMenusBySn(parentSn) : systemMenuMapper.loadMenusBySnAndUser(parentSn, user.getId());
     }
 

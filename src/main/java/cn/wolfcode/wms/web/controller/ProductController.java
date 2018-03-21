@@ -8,6 +8,7 @@ import cn.wolfcode.wms.service.ProductService;
 import cn.wolfcode.wms.util.JSONResult;
 import cn.wolfcode.wms.util.RequiredPermission;
 import cn.wolfcode.wms.util.UploadUtil;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,7 @@ public class ProductController {
     private ServletContext context;
 
     @RequiredPermission("商品列表")
+    @RequiresPermissions("product:list")
     @RequestMapping("list")
     public String query(Model model, @ModelAttribute("qo")ProductQueryObject qo) throws Exception {
         PageResult result = productService.query(qo);
@@ -42,6 +44,7 @@ public class ProductController {
     }
 
     @RequiredPermission("编辑商品")
+    @RequiresPermissions("product:input")
     @RequestMapping("input")
     public String input(Long id, Model model) throws Exception {
         model.addAttribute("brands", brandService.list());
@@ -66,6 +69,7 @@ public class ProductController {
     }
 
     @RequiredPermission("删除商品")
+    @RequiresPermissions("product:delete")
     @RequestMapping("delete")
     @ResponseBody
     public Object delete(Long id, String imagePath) throws Exception {

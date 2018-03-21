@@ -59,7 +59,7 @@
     limit #{startIndex},#{pageSize}
   </select>
 
-  <select id="selectRolesByEmployeeId" resultType="Role">
+  <select id="selectRolesByEmployeeId" resultMap="BaseResultMap">
     select r.id,r.name
     from role r join employee_role er on r.id = er.role_id
     where er.employee_id = #{employeeId}

@@ -6,6 +6,7 @@ import cn.wolfcode.wms.query.QueryObject;
 import cn.wolfcode.wms.service.BrandService;
 import cn.wolfcode.wms.util.JSONResult;
 import cn.wolfcode.wms.util.RequiredPermission;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ public class BrandController {
     private BrandService brandService;
 
     @RequiredPermission("品牌列表")
+    @RequiresPermissions("brand:list")
     @RequestMapping("list")
     public String query(Model model, @ModelAttribute("qo")QueryObject qo) throws Exception {
         PageResult result = brandService.query(qo);
@@ -29,6 +31,7 @@ public class BrandController {
     }
 
     @RequiredPermission("编辑品牌")
+    @RequiresPermissions("brand:input")
     @RequestMapping("input")
     public String input(Long id, Model model) throws Exception {
         if (id != null) {
@@ -45,6 +48,7 @@ public class BrandController {
     }
 
     @RequiredPermission("删除品牌")
+    @RequiresPermissions("brand:delete")
     @RequestMapping("delete")
     @ResponseBody
     public Object delete(Long id) throws Exception {

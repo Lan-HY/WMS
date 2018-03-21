@@ -35,7 +35,7 @@ public class PermissionServiceImpl implements PermissionService {
 
         while(it.hasNext()) {
             Object ctrl = it.next();
-            Method[] ms = ctrl.getClass().getDeclaredMethods();
+            Method[] ms = ctrl.getClass().getSuperclass().getDeclaredMethods();
 
             for(int i = 0; i < ms.length; ++i) {
                 Method m = ms[i];

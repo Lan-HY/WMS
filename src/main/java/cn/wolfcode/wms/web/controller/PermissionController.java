@@ -4,6 +4,7 @@ import cn.wolfcode.wms.query.QueryObject;
 import cn.wolfcode.wms.service.PermissionService;
 import cn.wolfcode.wms.util.JSONResult;
 import cn.wolfcode.wms.util.RequiredPermission;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,7 @@ public class PermissionController {
     }
 
     @RequiredPermission("权限列表")
+//    @RequiresPermissions("permission:list")
     @RequestMapping("list")
     public String list(@ModelAttribute("qo") QueryObject qo, Model model) {
         model.addAttribute("result", permissionService.query(qo));
@@ -29,6 +31,7 @@ public class PermissionController {
     }
 
     @RequiredPermission("删除权限")
+//    @RequiresPermissions("permission:delete")
     @RequestMapping("delete")
     @ResponseBody
     public Object delete(Long id) {
@@ -37,6 +40,7 @@ public class PermissionController {
     }
 
     @RequiredPermission("加载权限")
+//    @RequiresPermissions("permission:reload")
     @RequestMapping("reload")
     @ResponseBody
     public Object reload() {

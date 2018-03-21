@@ -6,6 +6,7 @@ import cn.wolfcode.wms.service.BrandService;
 import cn.wolfcode.wms.service.DepotService;
 import cn.wolfcode.wms.service.ProductStockService;
 import cn.wolfcode.wms.util.RequiredPermission;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,7 @@ public class ProductStockController {
 
 
     @RequiredPermission("商品列表")
+    @RequiresPermissions("productStock:list")
     @RequestMapping("list")
     public String query(Model model, @ModelAttribute("qo")ProductStockQueryObject qo) throws Exception {
         PageResult result = productStockService.query(qo);

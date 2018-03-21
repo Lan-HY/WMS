@@ -40,6 +40,11 @@
     <include refid="base_table"/>
     where e.id = #{id}
   </select>
+  <select id="selectByName" resultMap="BaseResultMap">
+    <include refid="base_column"/>
+    <include refid="base_table"/>
+    where e.name = #{name}
+  </select>
   <select id="selectAll" resultMap="BaseResultMap">
     <include refid="base_column"/>
     <include refid="base_table"/>

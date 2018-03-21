@@ -13,6 +13,8 @@ public interface EmployeeMapper {
 
     Employee selectByPrimaryKey(Long id);
 
+    Employee selectByName(String name);
+
     List<Employee> selectAll();
 
     int updateByPrimaryKey(Employee entity);

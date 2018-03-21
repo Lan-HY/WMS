@@ -7,6 +7,7 @@ import cn.wolfcode.wms.service.StockInComeBillService;
 import cn.wolfcode.wms.service.DepotService;
 import cn.wolfcode.wms.util.JSONResult;
 import cn.wolfcode.wms.util.RequiredPermission;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,7 @@ public class StockInComeBillController {
     private DepotService depotService;
 
     @RequiredPermission("采购入库单列表")
+    @RequiresPermissions("stockIncomeBill:list")
     @RequestMapping("list")
     public String query(Model model, @ModelAttribute("qo")StockInComeBillQueryObject qo) throws Exception {
         model.addAttribute("depots", depotService.list());
@@ -34,6 +36,7 @@ public class StockInComeBillController {
     }
 
     @RequiredPermission("编辑采购入库单")
+    @RequiresPermissions("stockIncomeBill:input")
     @RequestMapping("input")
     public String input(Long id, Model model) throws Exception {
         model.addAttribute("depots", depotService.list());
@@ -52,6 +55,7 @@ public class StockInComeBillController {
     }
 
     @RequiredPermission("删除采购入库单")
+    @RequiresPermissions("stockIncomeBill:delete")
     @RequestMapping("delete")
     @ResponseBody
     public Object delete(Long id) throws Exception {

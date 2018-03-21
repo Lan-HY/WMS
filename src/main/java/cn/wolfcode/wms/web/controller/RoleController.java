@@ -10,6 +10,7 @@ import cn.wolfcode.wms.service.RoleService;
 import cn.wolfcode.wms.service.SystemMenuService;
 import cn.wolfcode.wms.util.JSONResult;
 import cn.wolfcode.wms.util.RequiredPermission;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +33,7 @@ public class RoleController {
     }
 
     @RequiredPermission("角色列表")
+    @RequiresPermissions("role:list")
     @RequestMapping("list")
     public String list(@ModelAttribute("qo") QueryObject qo, Model model) {
         model.addAttribute("result", roleService.query(qo));
@@ -39,6 +41,7 @@ public class RoleController {
     }
 
     @RequiredPermission("编辑角色")
+    @RequiresPermissions("role:input")
     @RequestMapping("input")
     public String input(Long id, Model model) {
         if (id != null) {
@@ -57,6 +60,7 @@ public class RoleController {
     }
 
     @RequiredPermission("删除角色")
+    @RequiresPermissions("role:delete")
     @RequestMapping("delete")
     @ResponseBody
     public Object delete(Long id) {

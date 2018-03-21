@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        ">
+
+	<!--开启aop，对类代理-->
+	<aop:config expose-proxy="true"/>
+	<!--开启shiro注解支持-->
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager"/>
+	</bean>
+
+	<!--配置安全管理器-->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="userRealm"/>
+	</bean>
+
+	<bean id="userRealm" class="cn.wolfcode.wms.shiro.UserRealm">
+		<property name="credentialsMatcher" ref="credentialsMatcher"/>
+	</bean>
+
+	<bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+		<property name="hashAlgorithmName" value="md5"/>
+		<property name="hashIterations" value="1"/>
+	</bean>
+
+	<!--shiro过滤器-->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager"/>
+		<!--登录的表单地址-->
+		<property name="loginUrl" value="/login.do"/>
+		<!--登录成功后访问的地址-->
+		<property name="successUrl" value="/main.do"/>
+		<!--没有权限是显示的地址-->
+		<property name="unauthorizedUrl" value="/nopermission.jsp"/>
+		<!--url权限设置-->
+		<property name="filterChainDefinitions">
+			<value>
+				/js/**=anon
+				/images/**=anon
+				/style/**=anon
+				/upload/**=anon
+				/favicon.ico=anon
+				/logout.do=logout
+				/**=authc
+			</value>
+		</property>
+	</bean>
+</beans>
